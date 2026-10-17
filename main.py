@@ -1,7 +1,10 @@
 import sys
 
-from parsing.parser import Parser
+from simulation.simulation import Simulation
+
 from algorithms.pathfinder import Pathfinder
+from parsing.parser import Parser
+
 
 def main() -> None:
     if len(sys.argv) != 2:
@@ -20,6 +23,10 @@ def main() -> None:
 
     print("Path found:")
     print(" -> ".join([hub.name for hub in path]))
+
+    # ... after parsing ...
+    sim = Simulation(world)
+    sim.run()
 
 if __name__ == "__main__":
     main()

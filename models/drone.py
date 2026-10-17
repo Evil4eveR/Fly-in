@@ -11,7 +11,7 @@ class Drone:
     """A drone in the network. Tracks its ID, current location, and planned route."""  # noqa:E501
 
     def __init__(self, drone_id: int, location: Hub | Connection) -> None:
-        self.drone_id: int = drone_id
+        self.id: int = drone_id
         self.location: Hub | Connection = location
         # The planned route for the drone, can be empty if no route is set
         self.route: list[Hub | Connection] = []

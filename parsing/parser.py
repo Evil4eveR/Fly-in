@@ -28,6 +28,7 @@ class Parser:
         return metadata
 
     def _parse_nb_drones(self, line: str) -> int:
+        """ Parse drone numbes with validation """
         key, value = line.strip().split(":", 1)
         if key.strip() != "nb_drones":
             raise IndexError("Expected 'nb_drones'")
