@@ -1,7 +1,6 @@
 import sys
 
 from algorithms.pathfinder import Pathfinder
-from models.connection import Connection
 from models.hub import Hub
 from parsing.parser import Parser
 from simulation.simulation import Simulation
@@ -30,6 +29,7 @@ def main() -> None:
     # ... after parsing ...
     sim = Simulation(world)
     sim.run()
+
 
 if __name__ == "__main__":
     main()

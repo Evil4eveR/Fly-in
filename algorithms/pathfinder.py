@@ -6,7 +6,7 @@ from models.zone_type import ZoneType
 
 class Pathfinder:
     def get_neighbors(self, world: Map, hub_name: str) -> list[str]:
-        """Return the names of all neighboring hubs connected to the given hub."""
+        """Return the names of all neighboring hubs connected to the given hub."""  # noqa:E501
         neighbors: list[str] = []
         for key in world.connections:
             if hub_name in key:
@@ -26,7 +26,7 @@ class Pathfinder:
             return 1.0
 
     def findpath(self, world: Map) -> list[Hub | Connection]:
-        """Find the lowest-cost path from the start hub to the end hub using Dijkstra's algorithm."""
+        """Find the lowest-cost path from the start hub to the end hub using Dijkstra's algorithm."""  # noqa:E501
         assert world.start_hub is not None
         assert world.end_hub is not None
 
@@ -72,7 +72,7 @@ class Pathfinder:
             if i > 0:
                 prev_hub = path[1 - i]
                 if curr_hub.zone_type == ZoneType.RESTRICTED:
-                    conn = world.get_connection(prev_hub.name,curr_hub.name)
+                    conn = world.get_connection(prev_hub.name, curr_hub.name)
                     if conn:
                         final_route.append(conn)
             final_route.append(curr_hub)
