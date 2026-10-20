@@ -1,9 +1,10 @@
 import sys
 
-from simulation.simulation import Simulation
-
 from algorithms.pathfinder import Pathfinder
+from models.connection import Connection
+from models.hub import Hub
 from parsing.parser import Parser
+from simulation.simulation import Simulation
 
 
 def main() -> None:
@@ -22,8 +23,10 @@ def main() -> None:
     path = pathfinder.findpath(world)
 
     print("Path found:")
-    print(" -> ".join([hub.name for hub in path]))
-
+    print(" -> ".join([
+        h.name if isinstance(h, Hub) else f"{h.hub_a.name}-{h.hub_b.name}"
+        for h in path
+    ]))
     # ... after parsing ...
     sim = Simulation(world)
     sim.run()

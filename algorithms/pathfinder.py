@@ -1,3 +1,4 @@
+from models.connection import Connection
 from models.hub import Hub
 from models.map import Map
 from models.zone_type import ZoneType
@@ -24,7 +25,7 @@ class Pathfinder:
         else:
             return 1.0
 
-    def findpath(self, world: Map) -> list[Hub]:
+    def findpath(self, world: Map) -> list[Hub | Connection]:
         """Find the lowest-cost path from the start hub to the end hub using Dijkstra's algorithm."""
         assert world.start_hub is not None
         assert world.end_hub is not None
@@ -63,6 +64,16 @@ class Pathfinder:
             path.append(world.hubs[current_name])
             current_name = previous[current_name]
 
-        # We built it backwards, so reverse it
+        # built it backwards, so reverse it
         path.reverse()
-        return path
+        final_route: list[Hub | Connection] = []
+        for i in range(len(path)):
+            curr_hub = path[i]
+            if i > 0:
+                prev_hub = path[1 - i]
+                if curr_hub.zone_type == ZoneType.RESTRICTED:
+                    conn = world.get_connection(prev_hub.name,curr_hub.name)
+                    if conn:
+                        final_route.append(conn)
+            final_route.append(curr_hub)
+        return final_route
