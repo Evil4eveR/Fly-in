@@ -25,11 +25,12 @@ class Pathfinder:
         else:
             return 1.0
 
-    def findpath(self, world: Map) -> list[Hub | Connection]:
+    def findpath(self, world: Map, penalized_hubs: set[str] | None = None) -> list[Hub | Connection]:  # noqa:E501
         """Find the lowest-cost path from the start hub to the end hub using Dijkstra's algorithm."""  # noqa:E501
         assert world.start_hub is not None
         assert world.end_hub is not None
-
+        if penalized_hubs is None:
+            penalized_hubs = set()
         distances: dict[str, float] = {name: float('inf') for name in world.hubs}  # noqa:501
         distances[world.start_hub.name] = 0.0
 
@@ -47,6 +48,8 @@ class Pathfinder:
 
             for nei in neighbors:
                 cost = self.get_cost(world, nei)
+                if nei in penalized_hubs:
+                    cost += 10.0  # heavy penalty to force different route
 
                 if cost == float('inf'):
                     continue
@@ -77,3 +80,24 @@ class Pathfinder:
                         final_route.append(conn)
             final_route.append(curr_hub)
         return final_route
+
+    def find_multiple_paths(self, world: Map, max_paths: int = 2) -> list[list[Hub | Connection]]:  # noqa:E501
+        """Finds up to max_paths unique paths by penalizing used hubs."""
+        paths: list[list[Hub | Connection]] = []
+        penalized: set[str] = set()
+
+        for _ in range(max_paths):
+            path = self.findpath(world, penalized)
+            if not path:
+                break
+
+            # check if this is a duplicate of a path already found
+            if path not in paths:
+                paths.append(path)
+            # Penalize all intermediate hubs so the next search finds a different route  # noqa:E501
+            for node in path:
+                if isinstance(node, Hub) and node != world.start_hub and node != world.end_hub:  # noqa:E501
+                    penalized.add(node.name)
+        if not paths:
+            return [self.findpath(world)]
+        return paths

@@ -18,17 +18,21 @@ def main() -> None:
     print(f"Loaded map: {len(world.hubs)} hubs, "
           f"{len(world.connections)} connections, "
           f"{world.nb_drones} drones")
-    pathfinder = Pathfinder()
-    path = pathfinder.findpath(world)
 
-    print("Path found:")
-    print(" -> ".join([
-        h.name if isinstance(h, Hub) else f"{h.hub_a.name}-{h.hub_b.name}"
-        for h in path
-    ]))
+    paths = Pathfinder().find_multiple_paths(world)
+    print(f"Found {len(paths)} path(s):")
+    for i, path in enumerate(paths):
+        path_str = " -> ".join([
+            h.name if isinstance(h, Hub) else f"{h.hub_a.name}-{h.hub_b.name}"
+            for h in path
+        ])
+        print(f"Path {i+1}: {path_str}")
     # ... after parsing ...
-    sim = Simulation(world)
-    sim.run()
+    try:
+        sim = Simulation(world)
+        sim.run()
+    except (RuntimeError) as e:
+        print(e)
 
 
 if __name__ == "__main__":

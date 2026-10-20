@@ -25,3 +25,5 @@ lint:
 lint-strict:
 	flake8 .
 	mypy . --strict
+
+PHONY: all run debug clean lint lint-strict install

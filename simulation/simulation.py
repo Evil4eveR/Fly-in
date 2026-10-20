@@ -3,6 +3,7 @@ from models.connection import Connection
 from models.drone import Drone
 from models.hub import Hub
 from models.map import Map
+from simulation.visualizer import Visualizer
 
 
 class Simulation:
@@ -13,10 +14,11 @@ class Simulation:
 
         assert world.nb_drones is not None
         assert world.start_hub is not None
-        path = Pathfinder().findpath(self.world)
+        paths = Pathfinder().find_multiple_paths(self.world)
         for i in range(1, world.nb_drones + 1):
             drone = Drone(i, world.start_hub)
-            drone.route = path
+            assigned_path = paths[(i - 1) % len(paths)]
+            drone.route = assigned_path
             self.drones.append(drone)
             world.start_hub.drones.append(drone)
 
@@ -173,5 +175,6 @@ class Simulation:
                 if isinstance(drone.location, Connection):
                     output_parts.append(f"D{drone.id}-{drone.location.hub_a.name}-{drone.location.hub_b.name}")  # noqa:E501
                 else:
-                    output_parts.append(f"D{drone.id}-{drone.location.name}")
+                    colored_name = Visualizer.colorize(drone.location.name, drone.location.color)  # noqa:E501
+                    output_parts.append(f"D{drone.id}-{colored_name}")
         print(" ".join(output_parts))
